@@ -25,15 +25,19 @@ import jakarta.persistence.Column;
 public class Word {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Integer id;
+  private Integer id;
   @Column(length = 5, nullable = false, unique = true)
-  String word;
+  private String word;
   @Column(nullable = false)
-  Boolean isActive;
+  private Boolean isActive = true;
   @Column(nullable = false, updatable = false)
-  LocalDateTime createdAt;
+  private LocalDateTime createdAt;
   @Column(nullable = false)
-  LocalDateTime updatedAt;
+  private LocalDateTime updatedAt;
+
+  @jakarta.persistence.ManyToOne
+  @jakarta.persistence.JoinColumn(name = "created_by_id", nullable = false)
+  private User createdBy;
 
   @PrePersist
   protected void onCreate() {

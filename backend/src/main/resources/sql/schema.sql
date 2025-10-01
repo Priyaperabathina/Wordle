@@ -1,0 +1,42 @@
+-- Users table
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('PLAYER','ADMIN') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Words table
+CREATE TABLE words (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    word CHAR(5) NOT NULL UNIQUE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_by BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Games table
+CREATE TABLE games (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    player_id BIGINT NOT NULL,
+    word_id BIGINT NOT NULL,
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    finished_at TIMESTAMP NULL,
+    won BOOLEAN DEFAULT FALSE,
+    guesses_allowed INT DEFAULT 5,
+    guesses_made INT DEFAULT 0,
+    FOREIGN KEY (player_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE
+);
+
+-- Guesses table
+CREATE TABLE guesses (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    game_id BIGINT NOT NULL,
+    guess_text CHAR(5) NOT NULL,
+    feedback CHAR(5) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
+);
